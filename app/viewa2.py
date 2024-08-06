@@ -38,7 +38,7 @@ class UserAPI(MethodView):
         return user_schema.jsonify(user)
 
     def delete(self, user_id):
-        user = User.query.get(user_id)
+        user = User.query.get_or_404(user_id)
         if not user:
             return jsonify({'message': 'User not found'}), 404
 
