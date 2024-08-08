@@ -3,7 +3,10 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
 from flask import Flask
 from app.extensions import db, migrate, jwt, api
-from app.company import blp as CompanyBlueprint
+from app.company_views import blp as CompanyBlueprint
+from app.product_views import blp as ProductBlueprint
+from app.user_views import blp as UserBlueprint
+from app.auth_views import blp as AuthBlueprint
 
 def create_app():
     app = Flask(__name__)
@@ -15,6 +18,9 @@ def create_app():
     api.init_app(app)
 
     api.register_blueprint(CompanyBlueprint)
+    api.register_blueprint(ProductBlueprint)
+    api.register_blueprint(UserBlueprint)
+    api.register_blueprint(AuthBlueprint)
 
     with app.app_context():
         db.create_all()

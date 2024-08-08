@@ -5,6 +5,7 @@ class User(db.Model):
     name = db.Column(db.String(128), nullable=False)
     username = db.Column(db.String(80), nullable=False, unique=True)
     # email = db.Column(db.String(120), unique=True, nullable=False)
+    password = db.Column(db.String(128), nullable=False)
     profile_picture = db.Column(db.String(256), nullable=True)
     about = db.Column(db.String(256), nullable=True)
     created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
