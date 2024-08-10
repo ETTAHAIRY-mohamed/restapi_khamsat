@@ -27,6 +27,6 @@ class LoginUser(MethodView):
         user = User.query.filter_by(username=login_data['username']).first()
         if user and check_password_hash(user.password, login_data['password']):
             access_token = create_access_token(identity=user.id)
-            return {'access_token': access_token}
+            return {'Authorization': f"Bearer {access_token}"}
         else:
             abort(401, message="Invalid credentials")

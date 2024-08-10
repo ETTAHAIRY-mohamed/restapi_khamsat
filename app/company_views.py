@@ -10,7 +10,7 @@ blp = Blueprint('companies', __name__, url_prefix='/companies', description='Ope
 
 @blp.route('/')
 class Companies(MethodView):
-    @jwt_required()
+    @jwt_required(optional=True)
     @blp.response(200, CompanySchema(many=True))
     def get(self):
         # Get query parameters for search

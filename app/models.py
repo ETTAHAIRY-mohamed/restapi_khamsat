@@ -32,3 +32,17 @@ class Product(db.Model):
     additional_images = db.Column(db.JSON, nullable=True)
     
     company_id = db.Column(db.Integer, db.ForeignKey('company.id'), nullable=False)
+
+class Rating(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    rating = db.Column(db.Integer, nullable=False)
+    comment = db.Column(db.String(256), nullable=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    product_id = db.Column(db.Integer, db.ForeignKey('product.id'), nullable=False)
+    created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
+
+    user = db.relationship('User', backref=db.backref('ratings', lazy=True))
+    product = db.relationship('Product', backref=db.backref('ratings', lazy=True))
+
+    def __repr__(self):
+        return f'<Rating {self.rating} by User {self.user_id} on Product {self.product_id}>'

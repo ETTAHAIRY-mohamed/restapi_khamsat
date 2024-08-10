@@ -1,6 +1,5 @@
 from marshmallow import Schema, fields
 
-
 class UserSchema(Schema):
     id = fields.Int(dump_only=True)
     name = fields.Str(required=True)
@@ -31,6 +30,13 @@ class CompanySchema(Schema):
     address = fields.Str()
     created_at = fields.DateTime(dump_only=True)
 
+class RatingSchema(Schema):
+    id = fields.Int(dump_only=True)
+    rating = fields.Int(required=True)
+    comment = fields.Str()
+    user_id = fields.Int(required=False)
+    product_id = fields.Int(required=True)
+    created_at = fields.DateTime(dump_only=True)
 
 class ProductSchema(Schema):
     id = fields.Int(dump_only=True)
@@ -39,3 +45,4 @@ class ProductSchema(Schema):
     main_image = fields.Str(required=True)
     additional_images = fields.List(fields.Str())
     company_id = fields.Int(required=True)
+    ratings = fields.List(fields.Nested(RatingSchema), dump_only=True)
