@@ -1,3 +1,4 @@
 venv/
 .env
 instructions.jpg
+__pycache__
