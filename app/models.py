@@ -30,6 +30,7 @@ class Product(db.Model):
     category = db.Column(db.String(128), nullable=False)
     main_image = db.Column(db.String(256), nullable=False)
     additional_images = db.Column(db.JSON, nullable=True)
+    price = db.Column(db.Float, nullable=False)
     
     company_id = db.Column(db.Integer, db.ForeignKey('company.id'), nullable=False)
 

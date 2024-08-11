@@ -14,21 +14,22 @@ class Products(MethodView):
     @blp.response(200, ProductSchema(many=True))
     def get(self):
         search_query = request.args.get('search')
-        # include_ratings = request.args.get('include_ratings', 'false').lower() == 'true'
+        category_filter = request.args.get('category')
+        price_min = request.args.get('price_min', type=float)
+        price_max = request.args.get('price_max', type=float)
         
         query = Product.query
 
         if search_query:
             query = query.filter(Product.name.ilike(f'%{search_query}%'))
+        if category_filter:
+            query = query.filter(Product.category == category_filter)
+        if price_min is not None:
+            query = query.filter(Product.price >= price_min)
+        if price_max is not None:
+            query = query.filter(Product.price <= price_max)
 
-        products = query.all()
-
-        # if not include_ratings:
-        #     # If ratings are not requested, exclude them from the response
-        #     for product in products:
-        #         product.ratings = []
-
-        return products
+        return query.all()
 
     @blp.arguments(ProductSchema)
     @blp.response(201, ProductSchema)
