@@ -3,7 +3,7 @@ from flask.views import MethodView
 from app.extensions import db
 from app.models import Product
 from app.schemas import ProductSchema
-from flask_jwt_extended import jwt_required
+from flask_jwt_extended import jwt_required, get_jwt_identity
 from flask import request
 
 blp = Blueprint('products', __name__, url_prefix='/products', description='Operations on products')
@@ -31,9 +31,13 @@ class Products(MethodView):
 
         return query.all()
 
+    @jwt_required(optional=True)
     @blp.arguments(ProductSchema)
     @blp.response(201, ProductSchema)
     def post(self, new_data):
+        user_id = get_jwt_identity()  # Get the ID of the logged-in user
+
+
         product = Product(**new_data)
         db.session.add(product)
         db.session.commit()
