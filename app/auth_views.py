@@ -16,6 +16,7 @@ class RegisterUser(MethodView):
     @blp.arguments(UserRegistrationSchema)
     @blp.response(201, UserSchema)
     def post(self, new_data):
+        # To create a new user
         user_type = new_data.pop('user_type')
         auth_user = AuthUser(username=new_data['username'], 
                              password=generate_password_hash(new_data['password']), 
@@ -38,6 +39,7 @@ class RegisterUser(MethodView):
 class LoginUser(MethodView):
     @blp.arguments(UserLoginSchema)
     def post(self, login_data):
+        # To login
         auth_user = AuthUser.query.filter_by(username=login_data['username']).first()
         if auth_user and check_password_hash(auth_user.password, login_data['password']):
             access_token = create_access_token(identity=auth_user.id)
@@ -52,6 +54,7 @@ class UpdateProfile(MethodView):
     @blp.arguments(UserRegistrationSchema)
     @blp.response(201, UserSchema)
     def put(self, new_data):
+        # To update the user's profile || company's profile
         user_id = get_jwt_identity()
         auth_user = AuthUser.query.get_or_404(user_id)
 

@@ -3,9 +3,8 @@ from flask.views import MethodView
 from app.extensions import db
 from app.models import Company, AuthUser
 from app.schemas import CompanySchema
-from flask import request, abort
-from flask_jwt_extended import jwt_required, get_jwt_identity
-from werkzeug.security import generate_password_hash
+from flask import request
+from flask_jwt_extended import jwt_required
 from constants import *
 
 blp = Blueprint('companies', __name__, url_prefix='/companies', description='Operations on companies')
@@ -15,10 +14,10 @@ class Companies(MethodView):
     @jwt_required(optional=True)
     @blp.response(200, CompanySchema(many=True))
     def get(self):
-        # Get query parameters for search
+        # To search for comanies 
         search_query = request.args.get('search')
         query = Company.query
-        # Apply search filtering
+    
         if search_query:
             query = query.filter(Company.name.ilike(f'%{search_query}%'))
 
@@ -30,7 +29,7 @@ class CompanyProfile(MethodView):
     @jwt_required(optional= True)
     @blp.response(200, CompanySchema)
     def get(self, id):
-        # To view the profile of a company
+        # To view the profile of a specific company
         company = Company.query.get_or_404(id)
         return company
 

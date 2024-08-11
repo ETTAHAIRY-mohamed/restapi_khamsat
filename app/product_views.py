@@ -37,7 +37,7 @@ class Products(MethodView):
     @blp.arguments(ProductSchema)
     @blp.response(201, ProductSchema)
     def post(self, new_data):
-        # To add a product
+        # To add a product by a company
         user_id = get_jwt_identity()
         auth_user = AuthUser.query.get_or_404(user_id)
         if not auth_user.user_type == COMPANY_N:
@@ -48,4 +48,13 @@ class Products(MethodView):
         product = Product(**new_data)
         db.session.add(product)
         db.session.commit()
+        return product
+
+@blp.route('/<int:id>')
+class Product(MethodView):
+    @jwt_required(optional= True)
+    @blp.response(200, ProductSchema)
+    def get(self, id):
+        # To view the profile of a specific company
+        product = Product.query.get_or_404(id)
         return product
