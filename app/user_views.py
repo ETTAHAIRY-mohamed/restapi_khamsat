@@ -14,13 +14,6 @@ class Users(MethodView):
     def get(self):
         return User.query.all()
 
-    @blp.arguments(UserSchema)
-    @blp.response(201, UserSchema)
-    def post(self, new_data):
-        user = User(**new_data)
-        db.session.add(user)
-        db.session.commit()
-        return user
     
 
 @blp.route('/<int:id>')

@@ -22,14 +22,6 @@ class Companies(MethodView):
 
         return query.all()
 
-    @blp.arguments(CompanySchema)
-    @blp.response(201, CompanySchema)
-    def post(self, new_data):
-        company = Company(**new_data)
-        db.session.add(company)
-        db.session.commit()
-        return company
-
 
 
 @blp.route('/<int:id>')

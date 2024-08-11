@@ -1,14 +1,28 @@
 from app.extensions import db
+from constants import *
+
+class AuthUser(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(80), nullable=False, unique=True)
+    password = db.Column(db.String(128), nullable=False)
+    user_type = db.Column(db.Integer(1), db.CheckConstraint(f'user_type IN ({USER_N}, {COMPANY_N})'), nullable=False)
+    created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
+
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
+    company_id = db.Column(db.Integer, db.ForeignKey('company.id'), nullable=True)
+
+    def __repr__(self):
+        return f'<AuthUser {self.username} ({self.user_type})>'
+
+
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(128), nullable=False)
-    username = db.Column(db.String(80), nullable=False, unique=True)
-    # email = db.Column(db.String(120), unique=True, nullable=False)
-    password = db.Column(db.String(128), nullable=False)
     profile_picture = db.Column(db.String(256), nullable=True)
     about = db.Column(db.String(256), nullable=True)
-    created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
+
+    auth_user = db.relationship('AuthUser', backref='user', uselist=False)
 
     def __repr__(self):
         return f'<User {self.username}>'
@@ -16,13 +30,13 @@ class User(db.Model):
 class Company(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(128), nullable=False)
-    username = db.Column(db.String(128), nullable=False, unique=True)
     logo = db.Column(db.String(256), nullable=True)
     about = db.Column(db.String(256), nullable=True)
     address = db.Column(db.String(256), nullable=True)
-    created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
-
     products = db.relationship('Product', backref='company', lazy=True)
+    
+    auth_user = db.relationship('AuthUser', backref='company', uselist=False)
+
 
 class Product(db.Model):
     id = db.Column(db.Integer, primary_key=True)
