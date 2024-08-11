@@ -25,7 +25,7 @@ class Users(MethodView):
 
 @blp.route('/<int:id>')
 class UserProfile(MethodView):
-    @jwt_required()
+    @jwt_required(optional=True)
     @blp.response(200, UserSchema)
     def get(self, id):
         user = User.query.get_or_404(id)
