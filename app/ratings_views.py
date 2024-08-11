@@ -4,7 +4,7 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 from app.extensions import db
 from app.models import Product, Rating, AuthUser
 from app.schemas import RatingSchema
-from constants import *
+from .constants import *
 from flask import abort
 
 blp = Blueprint('ratings', __name__, url_prefix='/ratings', description='Operations on product ratings')

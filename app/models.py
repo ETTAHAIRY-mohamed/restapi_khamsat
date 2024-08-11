@@ -1,11 +1,11 @@
 from app.extensions import db
-from constants import *
+from .constants import *
 
 class AuthUser(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), nullable=False, unique=True)
     password = db.Column(db.String(128), nullable=False)
-    user_type = db.Column(db.Integer(1), db.CheckConstraint(f'user_type IN ({USER_N}, {COMPANY_N})'), nullable=False)
+    user_type = db.Column(db.Integer, db.CheckConstraint(f'user_type IN ({USER_N}, {COMPANY_N})'), nullable=False)
     created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
 
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
@@ -46,7 +46,7 @@ class Product(db.Model):
     category = db.Column(db.String(128), nullable=False)
     main_image = db.Column(db.String(256), nullable=False)
     additional_images = db.Column(db.JSON, nullable=True)
-    price = db.Column(db.Float, nullable=False)
+    price = db.Column(db.Float, nullable=True)
     
     company_id = db.Column(db.Integer, db.ForeignKey('company.id'), nullable=False)
 

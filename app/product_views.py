@@ -5,7 +5,7 @@ from app.models import Product, AuthUser
 from app.schemas import ProductSchema
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from flask import request, abort
-from constants import *
+from .constants import *
 
 blp = Blueprint('products', __name__, url_prefix='/products', description='Operations on products')
 
@@ -51,7 +51,7 @@ class Products(MethodView):
         return product
 
 @blp.route('/<int:id>')
-class Product(MethodView):
+class ViewProduct(MethodView):
     @jwt_required(optional= True)
     @blp.response(200, ProductSchema)
     def get(self, id):

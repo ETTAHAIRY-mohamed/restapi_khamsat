@@ -5,7 +5,7 @@ from app.models import Company, AuthUser
 from app.schemas import CompanySchema
 from flask import request
 from flask_jwt_extended import jwt_required
-from constants import *
+from .constants import *
 
 blp = Blueprint('companies', __name__, url_prefix='/companies', description='Operations on companies')
 

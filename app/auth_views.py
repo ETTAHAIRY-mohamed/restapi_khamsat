@@ -6,7 +6,7 @@ from app.schemas import UserSchema, UserLoginSchema, UserRegistrationSchema
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_jwt_extended import create_access_token
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from constants import *
+from .constants import *
 
 blp = Blueprint('auth', __name__, url_prefix='/auth', description='Authentication operations')
     
@@ -83,4 +83,4 @@ class UpdateProfile(MethodView):
             db.session.commit()
             return company
 
-    abort(403, 'User type unknown!')
+        abort(403, 'User type unknown!')
