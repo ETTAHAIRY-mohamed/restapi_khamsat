@@ -5,6 +5,7 @@ from app.models import AuthUser, User, Company
 from app.schemas import UserSchema, UserLoginSchema, UserRegistrationSchema
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_jwt_extended import create_access_token
+from flask_jwt_extended import jwt_required, get_jwt_identity
 from constants import *
 
 blp = Blueprint('auth', __name__, url_prefix='/auth', description='Authentication operations')
@@ -45,3 +46,38 @@ class LoginUser(MethodView):
             abort(401, message="Invalid credentials")
 
 
+@blp.route('/update_profile', methods=['PUT'])
+class UpdateProfile(MethodView):
+    @jwt_required(optional= True)
+    @blp.arguments(UserRegistrationSchema)
+    @blp.response(201, UserSchema)
+    def put(self, new_data):
+        user_id = get_jwt_identity()
+        auth_user = AuthUser.query.get_or_404(user_id)
+
+        if 'password' in new_data:
+            auth_user.password = generate_password_hash(new_data['password'])
+        
+        if 'username' in new_data:
+            auth_user.username = new_data['username']
+
+        if auth_user.user_type == USER_N:
+            user = auth_user.user
+            # Update user profile
+            user.name = new_data.get('name', user.name)
+            user.profile_picture = new_data.get('profile_picture', user.profile_picture)
+            user.about = new_data.get('about', user.about)
+            db.session.commit()
+            return user
+            
+        elif auth_user.user_type == COMPANY_N:
+            company = auth_user.company
+            # Update company profile
+            company.name = new_data.get('name', company.name)
+            company.logo = new_data.get('logo', company.logo)
+            company.about = new_data.get('about', company.about)
+            company.address = new_data.get('address', company.address)
+            db.session.commit()
+            return company
+
+    abort(403, 'User type unknown!')

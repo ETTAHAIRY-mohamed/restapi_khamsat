@@ -21,6 +21,7 @@ class User(db.Model):
     name = db.Column(db.String(128), nullable=False)
     profile_picture = db.Column(db.String(256), nullable=True)
     about = db.Column(db.String(256), nullable=True)
+    created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
 
     auth_user = db.relationship('AuthUser', backref='user', uselist=False)
 
@@ -34,7 +35,8 @@ class Company(db.Model):
     about = db.Column(db.String(256), nullable=True)
     address = db.Column(db.String(256), nullable=True)
     products = db.relationship('Product', backref='company', lazy=True)
-    
+    created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
+
     auth_user = db.relationship('AuthUser', backref='company', uselist=False)
 
 

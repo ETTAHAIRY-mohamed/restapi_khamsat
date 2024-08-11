@@ -44,6 +44,5 @@ class ProductSchema(Schema):
     category = fields.Str(required=True)
     main_image = fields.Str(required=True)
     additional_images = fields.List(fields.Str())
-    company_id = fields.Int(required=True)
     ratings = fields.List(fields.Nested(RatingSchema), dump_only=True)
     price = fields.Float(required=True)  # Added price field
