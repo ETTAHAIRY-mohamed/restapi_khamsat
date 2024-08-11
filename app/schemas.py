@@ -1,4 +1,5 @@
-from marshmallow import Schema, fields
+from marshmallow import Schema, fields, validate
+from .constants import *
 
 class UserSchema(Schema):
     id = fields.Int(dump_only=True)
@@ -10,10 +11,19 @@ class UserSchema(Schema):
 
 class UserRegistrationSchema(Schema):
     id = fields.Int(dump_only=True)
-    name = fields.Str(required=True)
     username = fields.Str(required=True)
     password = fields.Str(required=True, load_only=True)  # Load only means it won't be included in the serialized output
+    user_type = fields.Int(required=True, validate=validate.OneOf([USER_N, COMPANY_N]))
+
+    # Filelds for user
     profile_picture = fields.Str()
+
+    # Filelds for company
+    logo = fields.Str()
+    adress = fields.Str()
+
+    # Commun fileds
+    name = fields.Str(required= True)
     about = fields.Str()
     created_at = fields.DateTime(dump_only=True)
 

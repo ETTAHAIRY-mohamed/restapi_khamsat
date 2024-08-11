@@ -14,7 +14,7 @@ blp = Blueprint('auth', __name__, url_prefix='/auth', description='Authenticatio
 @blp.route('/register', methods=['POST'])
 class RegisterUser(MethodView):
     @blp.arguments(UserRegistrationSchema)
-    @blp.response(201, UserSchema)
+    @blp.response(201, UserRegistrationSchema)
     def post(self, new_data):
         # To create a new user
         user_type = new_data.pop('user_type')
@@ -23,11 +23,19 @@ class RegisterUser(MethodView):
                              user_type=user_type)
 
         if user_type == USER_N:
-            user = User(**new_data)
+            user = User()
+            user.profile_picture = new_data.get('profile_picture')
+            user.name = new_data.get('name')
+            user.about = new_data.get('about')
             db.session.add(user)
             auth_user.user = user
+
         elif user_type == COMPANY_N:
-            company = Company(**new_data)
+            company = Company()
+            company.name = new_data.get('name')
+            company.logo = new_data.get('logo')
+            company.about = new_data.get('about')
+            company.address = new_data.get('address')
             db.session.add(company)
             auth_user.company = company
 
