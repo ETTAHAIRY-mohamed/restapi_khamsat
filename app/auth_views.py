@@ -2,7 +2,7 @@ from flask_smorest import Blueprint, abort
 from flask.views import MethodView
 from app.extensions import db
 from app.models import AuthUser, User, Company
-from app.schemas import UserSchema, CompanySchema ,UserLoginSchema, UserRegistrationSchema
+from app.schemas import UserSchema,UserUpdateProfileSchema, CompanySchema ,UserLoginSchema, UserRegistrationSchema
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_jwt_extended import create_access_token
 from flask_jwt_extended import jwt_required, get_jwt_identity
@@ -59,7 +59,7 @@ class LoginUser(MethodView):
 @blp.route('/update_profile', methods=['PUT'])
 class UpdateProfile(MethodView):
     @jwt_required(optional= True)
-    @blp.arguments(UserRegistrationSchema)
+    @blp.arguments(UserUpdateProfileSchema)
     def put(self, new_data):
         # To update the user's profile || company's profile
         user_id = get_jwt_identity()
@@ -80,7 +80,7 @@ class UpdateProfile(MethodView):
             db.session.commit()
 
             user_schema = UserSchema()
-            return user_schema.jsonify(user)
+            return user_schema.dump(user)
             
         elif auth_user.user_type == COMPANY_N:
             company = auth_user.company
@@ -92,6 +92,6 @@ class UpdateProfile(MethodView):
             db.session.commit()
 
             company_schema = CompanySchema()
-            return company_schema.jsonify(company)
+            return company_schema.dump(company)
 
         abort(403, 'User type unknown!')

@@ -20,10 +20,26 @@ class UserRegistrationSchema(Schema):
 
     # Filelds for company
     logo = fields.Str()
-    adress = fields.Str()
+    address = fields.Str()
 
     # Commun fileds
     name = fields.Str(required= True)
+    about = fields.Str()
+    created_at = fields.DateTime(dump_only=True)
+
+class UserUpdateProfileSchema(Schema):
+    username = fields.Str()
+    password = fields.Str(load_only=True)  # Load only means it won't be included in the serialized output
+
+    # Filelds for user
+    profile_picture = fields.Str()
+
+    # Filelds for company
+    logo = fields.Str()
+    address = fields.Str()
+
+    # Commun fileds
+    name = fields.Str()
     about = fields.Str()
     created_at = fields.DateTime(dump_only=True)
 

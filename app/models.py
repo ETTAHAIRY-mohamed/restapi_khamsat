@@ -1,6 +1,17 @@
 from app.extensions import db
 from .constants import *
 
+user_favorite_products = db.Table('user_favorite_products',
+    db.Column('user_id', db.Integer, db.ForeignKey('user.id'), primary_key=True),
+    db.Column('product_id', db.Integer, db.ForeignKey('product.id'), primary_key=True)
+)
+user_favorite_companies = db.Table('user_favorite_companies',
+    db.Column('user_id', db.Integer, db.ForeignKey('user.id'), primary_key=True),
+    db.Column('company_id', db.Integer, db.ForeignKey('company.id'), primary_key=True)
+)
+
+
+
 class AuthUser(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), nullable=False, unique=True)
@@ -22,6 +33,15 @@ class User(db.Model):
     profile_picture = db.Column(db.String(256), nullable=True)
     about = db.Column(db.String(256), nullable=True)
     created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
+
+    # Many-to-many relationship with Product
+    favorite_products = db.relationship('Product', secondary=user_favorite_products, lazy='subquery',
+                                        backref=db.backref('favorited_by_users', lazy=True))
+    
+    # Many-to-many relationship with company
+    favorite_companies = db.relationship('Company', secondary=user_favorite_companies, lazy='subquery',
+                                        backref=db.backref('favorited_by_users', lazy=True))
+    favorite_categories = db.Column(db.JSON, nullable=True, default=[])
 
     auth_user = db.relationship('AuthUser', backref='user', uselist=False)
 
