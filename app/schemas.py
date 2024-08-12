@@ -61,6 +61,15 @@ class RatingSchema(Schema):
     rating = fields.Int(required=True)
     comment = fields.Str()
     product_id = fields.Int(required=True)
+    user_id = fields.Int(dump_only=True)
+    created_at = fields.DateTime(dump_only=True)
+
+class UpdateRatingSchema(Schema):
+    id = fields.Int(dump_only=True)
+    rating = fields.Int()
+    comment = fields.Str()
+    product_id = fields.Int(dump_only = True)
+    user_id = fields.Int(dump_only=True)
     created_at = fields.DateTime(dump_only=True)
 
 class ProductSchema(Schema):
