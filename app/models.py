@@ -1,4 +1,5 @@
 from app.extensions import db
+from datetime import datetime
 from .constants import *
 
 user_favorite_products = db.Table('user_favorite_products',
@@ -45,8 +46,6 @@ class User(db.Model):
 
     auth_user = db.relationship('AuthUser', backref='user', uselist=False)
 
-    def __repr__(self):
-        return f'<User {self.username}>'
     
 class Company(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -83,3 +82,15 @@ class Rating(db.Model):
 
     def __repr__(self):
         return f'<Rating {self.rating} by User {self.user_id} on Product {self.product_id}>'
+    
+class ProductClick(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    product_id = db.Column(db.Integer, db.ForeignKey('product.id'), nullable=False)
+    clicked_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+class CategoryClick(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    category_name = db.Column(db.String(80), nullable=False)
+    clicked_at = db.Column(db.DateTime, default=datetime.utcnow)

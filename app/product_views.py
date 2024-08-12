@@ -1,7 +1,7 @@
 from flask_smorest import Blueprint
 from flask.views import MethodView
 from app.extensions import db
-from app.models import Product, AuthUser
+from app.models import Product, AuthUser, ProductClick, CategoryClick
 from app.schemas import ProductSchema
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from flask import request, abort
@@ -26,6 +26,13 @@ class Products(MethodView):
             query = query.filter(Product.name.ilike(f'%{search_query}%'))
         if category_filter:
             query = query.filter(Product.category == category_filter)
+            auth_user_id = get_jwt_identity()
+            auth_user = AuthUser.query.get_or_404(auth_user_id)
+            new_click = CategoryClick(user_id= auth_user.user.id, 
+                                      category_name=category_filter)
+            db.session.add(new_click)
+            db.session.commit()
+
         if price_min is not None:
             query = query.filter(Product.price >= price_min)
         if price_max is not None:
@@ -57,4 +64,9 @@ class ViewProduct(MethodView):
     def get(self, id):
         # To view the profile of a specific company
         product = Product.query.get_or_404(id)
+        auth_user_id = get_jwt_identity()
+        auth_user = AuthUser.query.get_or_404(auth_user_id)
+        new_click = ProductClick(user_id=auth_user.user.id, product_id=product.id)
+        db.session.add(new_click)
+        db.session.commit()
         return product
