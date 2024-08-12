@@ -2,7 +2,7 @@ from flask_smorest import Blueprint
 from flask.views import MethodView
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from app.extensions import db
-from app.models import Product, User, Company, AuthUser
+from app.models import Product, Company, AuthUser
 from flask import abort, jsonify
 from app.constants import *
 
@@ -16,7 +16,7 @@ class FavoriteProduct(MethodView):
         auth_user_id = get_jwt_identity()  # Get the ID of the logged-in user
         auth_user = AuthUser.query.get_or_404(auth_user_id)
 
-        if user.auth_user.user_type != USER_N:
+        if auth_user.user_type != USER_N:
             abort(403, description="You don't have permission to perform this action")
         
         user = auth_user.user
@@ -34,7 +34,7 @@ class FavoriteProduct(MethodView):
         auth_user_id = get_jwt_identity()  # Get the ID of the logged-in user
         auth_user = AuthUser.query.get_or_404(auth_user_id)
 
-        if user.auth_user.user_type != USER_N:
+        if auth_user.user_type != USER_N:
             abort(403, description="You don't have permission to perform this action")
         
         user = auth_user.user
@@ -55,7 +55,7 @@ class FavoriteCompany(MethodView):
         auth_user_id = get_jwt_identity()  # Get the ID of the logged-in user
         auth_user = AuthUser.query.get_or_404(auth_user_id)
 
-        if user.auth_user.user_type != USER_N:
+        if auth_user.user_type != USER_N:
             abort(403, description="You don't have permission to perform this action")
         
         user = auth_user.user
@@ -73,7 +73,7 @@ class FavoriteCompany(MethodView):
         auth_user_id = get_jwt_identity()  # Get the ID of the logged-in user
         auth_user = AuthUser.query.get_or_404(auth_user_id)
 
-        if user.auth_user.user_type != USER_N:
+        if auth_user.user_type != USER_N:
             abort(403, description="You don't have permission to perform this action")
         
         user = auth_user.user
@@ -94,7 +94,7 @@ class FavoriteCategory(MethodView):
         auth_user_id = get_jwt_identity()  # Get the ID of the logged-in user
         auth_user = AuthUser.query.get_or_404(auth_user_id)
 
-        if user.auth_user.user_type != USER_N:
+        if auth_user.user_type != USER_N:
             abort(403, description="You don't have permission to perform this action")
         
         user = auth_user.user
@@ -111,7 +111,7 @@ class FavoriteCategory(MethodView):
         auth_user_id = get_jwt_identity()  # Get the ID of the logged-in user
         auth_user = AuthUser.query.get_or_404(auth_user_id)
 
-        if user.auth_user.user_type != USER_N:
+        if auth_user.user_type != USER_N:
             abort(403, description="You don't have permission to perform this action")
         
         user = auth_user.user
@@ -122,3 +122,26 @@ class FavoriteCategory(MethodView):
         user.favorite_categories.remove(category)
         db.session.commit()
         return jsonify(message="Category removed from favorites"), 200
+
+
+@blp.route('/view', methods=['GET'])
+class ViewFavorites(MethodView):
+    @jwt_required()  # Ensure authentication
+    def get(self):
+        auth_user_id = get_jwt_identity()  # Get the ID of the logged-in user
+        auth_user = AuthUser.query.get_or_404(auth_user_id)
+
+        if auth_user.user_type != USER_N:
+            abort(403, description="You don't have permission to perform this action")
+        
+        user = auth_user.user
+
+        favorite_products = [product.id for product in user.favorite_products]
+        favorite_companies = [company.id for company in user.favorite_companies]
+        favorite_categories = user.favorite_categories
+
+        return jsonify({
+            'favorite_products': favorite_products,
+            'favorite_companies': favorite_companies,
+            'favorite_categories': favorite_categories
+        })

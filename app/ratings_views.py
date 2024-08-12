@@ -28,6 +28,9 @@ class Ratings(MethodView):
         existing_rating = Rating.query.filter_by(user_id=auth_user.user.id, product_id=new_data['product_id']).first()
         if existing_rating:
             abort(400, description="You have already rated this product")
+        
+        if not Product.query.get(new_data['product_id']):
+            abort(400, description="No such product")
 
         new_data['user_id'] = auth_user.user.id  # Add the user ID to the rating data
 
