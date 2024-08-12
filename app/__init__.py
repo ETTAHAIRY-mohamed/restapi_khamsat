@@ -6,6 +6,7 @@ from app.product_views import blp as ProductBlueprint
 from app.user_views import blp as UserBlueprint
 from app.auth_views import blp as AuthBlueprint
 from app.ratings_views import blp as RatingsBlueprint
+from app.favorites_views import blp as FavoritesBlueprint
 
 def create_app():
     app = Flask(__name__)
@@ -21,6 +22,7 @@ def create_app():
     api.register_blueprint(UserBlueprint)
     api.register_blueprint(AuthBlueprint)
     api.register_blueprint(RatingsBlueprint)
+    api.register_blueprint(FavoritesBlueprint)
 
     with app.app_context():
         db.create_all()
