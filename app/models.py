@@ -42,7 +42,7 @@ class User(db.Model):
     # Many-to-many relationship with company
     favorite_companies = db.relationship('Company', secondary=user_favorite_companies, lazy='subquery',
                                         backref=db.backref('favorited_by_users', lazy=True))
-    favorite_categories = db.Column(db.JSON, nullable=True, default=[])
+    favorite_categories = db.Column(db.JSON, nullable=True, default=list)
 
     auth_user = db.relationship('AuthUser', backref='user', uselist=False)
 

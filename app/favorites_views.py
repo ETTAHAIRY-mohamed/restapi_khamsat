@@ -102,6 +102,7 @@ class FavoriteCategory(MethodView):
         if category in user.favorite_categories:
             return jsonify(message="Category already in favorites"), 400
 
+        user.favorite_categories = list(user.favorite_categories)
         user.favorite_categories.append(category)
         db.session.commit()
         return jsonify(message="Category added to favorites"), 200
@@ -119,6 +120,7 @@ class FavoriteCategory(MethodView):
         if category not in user.favorite_categories:
             return jsonify(message="Category not in favorites"), 400
 
+        user.favorite_categories = list(user.favorite_categories)
         user.favorite_categories.remove(category)
         db.session.commit()
         return jsonify(message="Category removed from favorites"), 200
